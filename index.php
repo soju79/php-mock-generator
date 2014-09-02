@@ -73,7 +73,7 @@ class Mock {
 		$type = null === $type ? $this->type : $type;
 		$page = null === $page ? $this->page : $page;
 		$size = null === $size ? $this->size : $size;
-		$total = null === $total ? $this->total : $total;
+		$this->total = null === $total ? $this->total : $total;
 		$response = null;
 		if (in_array($type, $this->type_arr)) {
 			if (in_array($type, array('edit', 'del'))) {
