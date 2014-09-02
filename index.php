@@ -35,20 +35,16 @@ class Mock {
 
 	private function make($index=null) {
 		$data = array();
-		foreach ($this->fields as $field => $field_type) {
-			$max = $this->doc_max;
-			if ('array' === gettype($field_type) 
-				&& isset($field_type['max']) 
-				&& 'integer' === gettype($field_type['max'])
-			) {
-				$max = $field_type['max'];
-				$field_type = 'string';
-			}
-			switch($field_type) {
-				case 'id':
-					$mock = null === $index ? rand(0, $this->doc_max) : $index;
+		foreach ($this->fields as $field) {
+			switch($field['type']) {
+				case 'index':
+					$mock = null === $index ? rand(0, $this->total) : $index;
 					break;
 				case 'string':
+					$max = $this->doc_max;
+					if (isset($field['max']) && !empty($field['max']) && 'integer' === gettype($field['max'])) {
+						$max = $field['max'];
+					}
 					$s = rand(0, $this->doc_max);
 					$length = rand(0, $max);
 					$mock = $this->enc(substr($this->doc, $s, $length));
@@ -67,7 +63,7 @@ class Mock {
 			if (strlen($mock) < 1) {
 				return $this->make($index);
 			}
-			$data[$field] = $mock;
+			$data[$field['name']] = $mock;
 		}
 		return $data;
 	}
@@ -95,7 +91,7 @@ class Mock {
 				}
 				$response = json_encode(array(
 					'result'=> true, 
-					'total'=> $total,
+					'total'=> $this->total,
 					'list'=> $list
 				));
 			}
@@ -112,17 +108,9 @@ $lang = !empty($_GET['lang']) ? $_GET['lang'] : null;
 $page = !empty($_GET['page']) ? (int) $_GET['page'] : null;
 $size = !empty($_GET['size']) ? (int) $_GET['size'] : null;
 $total = !empty($_GET['total']) ? (int) $_GET['total'] : null;
+$columns = !empty($_GET['columns']) ? json_decode($_GET['columns'], true) : null;
 
-$Mock = new Mock(array(
-	'id'		=> 'id',
-	'name'		=> array('max'=> 45),
-	'title'		=> array('max'=> 255),
-	'content'	=> 'string',
-	'ip'		=> 'ip',
-	'reg_ate'	=> 'date'
-), $lang);
-
-$response = $Mock->gen($type, $page, $size, $total);
+$response = (new Mock($columns, $lang))->gen($type, $page, $size, $total);
 
 if (!empty($_GET['callback'])) {
 	echo preg_replace('/[^a-zA-Z0-9_]+/', '', $_GET['callback']) . '(' . $response . ')';
