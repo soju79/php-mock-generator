@@ -64,6 +64,9 @@ class Mock {
 					$mock = $this->enc(substr($this->doc, $s, rand($s, $this->doc_max)));
 					break;
 			}
+			if (strlen($mock) < 1) {
+				return $this->make($index);
+			}
 			$data[$field] = $mock;
 		}
 		return $data;
