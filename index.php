@@ -8,7 +8,7 @@ $size = !empty($_GET['size']) ? (int) $_GET['size'] : null;
 $total = !empty($_GET['total']) ? (int) $_GET['total'] : null;
 $columns = !empty($_GET['columns']) ? json_decode($_GET['columns'], true) : null;
 
-$response = (new Mock($columns, $lang))->gen($type, $page, $size, $total);
+$response = (new Mock($columns, $lang))->json($type, $page, $size, $total);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');

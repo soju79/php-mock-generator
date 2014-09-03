@@ -85,10 +85,10 @@ class Mock {
 
 	public function gen($type=null, $page=null, $size=null, $total=null) {
 		if (empty($this->fields)) {
-			return json_encode(array(
+			return array(
 				'result'=> false,
 				'error'=> 'empty fields'
-			));
+			);
 		}
 		$type = null === $type ? $this->type : $type;
 		$page = null === $page ? $this->page : $page;
@@ -97,12 +97,12 @@ class Mock {
 		$response = null;
 		if (in_array($type, $this->type_arr)) {
 			if (in_array($type, array('edit', 'del'))) {
-				$response = json_encode(array('result'=> true));
+				$response = array('result'=> true);
 			} else if ('get' === $type) {
-				$response = json_encode(array(
+				$response = array(
 					'result'=> true, 
 					'data'=> $this->make()
-				));
+				);
 			} else if ('list' === $type) {
 				$list = array();
 				$max=$page*$size;
@@ -110,14 +110,18 @@ class Mock {
 				for ($i=($page-1)*$size; $i<$max; $i++) {
 					array_push($list, $this->make($i+1));
 				}
-				$response = json_encode(array(
+				$response = array(
 					'result'=> true, 
 					'total'=> $this->total,
 					'list'=> $list
-				));
+				);
 			}
 		}
 		return $response;
+	}
+
+	public function json($type=null, $page=null, $size=null, $total=null) {
+		return json_encode($this->gen($type, $page, $size, $total));
 	}
 }
 ?>
