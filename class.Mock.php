@@ -15,7 +15,7 @@ class Mock {
 	private $page = 1;
 	private $size = 10;
 	private $total = 1000;
-	private $type_arr = array('list', 'get', 'edit', 'del');
+	private $type_arr = array('list', 'get', 'edit', 'del', 'menu');
 	private $defined_type = array('id', 'ip', 'date', 'string');
 	private $fields = array();
 
@@ -46,6 +46,31 @@ class Mock {
 		$s = strpos($str, ' ')+1;
 		$e = strrpos($str, ' ');
 		return str_replace('?', '', mb_convert_encoding(substr($str, $s, $e-$s), 'UTF-8', 'UTF-8'));
+	}
+
+	private function menuItem($id=null) {
+		$id = null === $id ? rand(0, $this->total) : $id;
+		$text = $this->enc(substr($this->doc, rand(0, $this->doc_max), rand(0, 50)));
+		$children = 1 === rand(0, 1) ? $this->menuItem() : array();
+		if (strlen($text) < 1) {
+			return $this->menuItem($id);
+		}
+		$item = array(
+			'id'=> $id,
+			'children'=> $children,
+			'url'=> 'http://testurl.xxx?id=' . $id,
+			'text'=> $text
+		);
+		return $item;
+	}
+
+	private function menu($total=null) {
+		$total = null === $total ? rand(0, $this->total) : $total;
+		$menu = array();
+		for ($i=0; $i<$total; $i++) {
+			array_push($menu, $this->menuItem($i+1));
+		}
+		return $menu;
 	}
 
 	private function make($index=null) {
@@ -84,7 +109,7 @@ class Mock {
 	}
 
 	public function gen($type=null, $page=null, $size=null, $total=null) {
-		if (empty($this->fields)) {
+		if ('menu' !== $type && empty($this->fields)) {
 			return array(
 				'result'=> false,
 				'error'=> 'empty fields'
@@ -115,13 +140,22 @@ class Mock {
 					'total'=> $this->total,
 					'list'=> $list
 				);
+			} else if ('menu' === $type) {
+				$response = array(
+					'result'=> true, 
+					'data'=> $this->menu($this->total)
+				);
 			}
 		}
 		return $response;
 	}
 
 	public function json($type=null, $page=null, $size=null, $total=null) {
-		return json_encode($this->gen($type, $page, $size, $total));
+		if (null !== $type && 'menu' === $type) {
+			return json_encode($this->gen($type, null, null, $total));
+		} else {
+			return json_encode($this->gen($type, $page, $size, $total));
+		}
 	}
 }
 ?>
