@@ -28,13 +28,15 @@ $mock_array_list = $Mock->gen($type, $page, $size, $total);
 $mock_array_get = (new Mock($get_columns, $lang))->gen('get');
 $mock_array_edit = $Mock->gen('edit');
 $mock_array_del = $Mock->gen('del');
+$mock_array_menu = $Mock->gen('menu', null, null, 20);
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode(array(
 	'list'=> $mock_array_list,
 	'get'=> $mock_array_get,
 	'edit'=> $mock_array_edit,
-	'del'=> $mock_array_del
+	'del'=> $mock_array_del,
+	'menu'=> $mock_array_menu
 ));
 //echo $Mock->json($type, $page, $size, $total);
 ?>
