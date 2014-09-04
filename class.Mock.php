@@ -151,11 +151,7 @@ class Mock {
 	}
 
 	public function json($type=null, $page=null, $size=null, $total=null) {
-		if (null !== $type && 'menu' === $type) {
-			return json_encode($this->gen($type, null, null, $total));
-		} else {
-			return json_encode($this->gen($type, $page, $size, $total));
-		}
+		return json_encode($this->gen($type, $page, $size, $total));
 	}
 }
 ?>
