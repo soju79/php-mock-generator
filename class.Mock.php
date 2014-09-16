@@ -80,6 +80,17 @@ class Mock {
 				case 'index':
 					$mock = null === $index ? rand(0, $this->total) : $index;
 					break;
+				case 'number':
+					$min = 0;
+					$max = $this->doc_max;
+					if (isset($field['min']) && !empty($field['min']) && 'integer' === gettype($field['min'])) {
+						$min = $field['min'];
+					}
+					if (isset($field['max']) && !empty($field['max']) && 'integer' === gettype($field['max'])) {
+						$max = $field['max'];
+					}
+					$mock = rand($min, $max);
+					break;
 				case 'string':
 					$max = $this->doc_max;
 					if (isset($field['max']) && !empty($field['max']) && 'integer' === gettype($field['max'])) {

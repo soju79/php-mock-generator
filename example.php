@@ -5,6 +5,7 @@ $columns = array(
   array('name'=> 'id', 'type'=> 'index'),
   array('name'=> 'name', 'type'=> 'string', 'max'=> 45),
   array('name'=> 'subject', 'type'=> 'string', 'max'=> 255),
+  array('name'=> 'count', 'type'=> 'number', 'min'=>0, 'max'=>100),
   array('name'=> 'ip', 'type'=> 'ip'),
   array('name'=> 'reg_date', 'type'=> 'date')
 );
