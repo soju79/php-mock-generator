@@ -13,7 +13,7 @@ $response = (new Mock($columns, $lang))->json($type, $page, $size, $total);
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 if (!empty($_GET['callback'])) {
-	echo preg_replace('/[^a-zA-Z0-9_]+/', '', $_GET['callback']) . '(' . $response . ')';
+	echo preg_replace('/[^a-zA-Z0-9_.]+/', '', $_GET['callback']) . '(' . $response . ')';
 } else {
 	echo $response;
 }

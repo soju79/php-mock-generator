@@ -33,7 +33,7 @@ $response = json_encode(array(
 ));
 //$response = $Mock->json($type, $page, $size, $total);
 if (!empty($_GET['callback'])) {
-	echo preg_replace('/[^a-zA-Z0-9_]+/', '', $_GET['callback']) . '(' . $response . ')';
+	echo preg_replace('/[^a-zA-Z0-9_.]+/', '', $_GET['callback']) . '(' . $response . ')';
 } else {
 	echo $response;
 }
