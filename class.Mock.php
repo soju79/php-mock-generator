@@ -16,7 +16,7 @@ class Mock {
 	private $size = 10;
 	private $total = 1000;
 	private $type_arr = array('list', 'get', 'edit', 'del', 'menu');
-	private $defined_type = array('id', 'ip', 'date', 'string');
+	private $defined_type = array('id', 'ip', 'date', 'string', 'boolean', 'enum');
 	private $fields = array();
 
 	public function __construct($fields, $lang=null) {
@@ -80,6 +80,16 @@ class Mock {
 				case 'index':
 					$mock = null === $index ? rand(0, $this->total) : $index;
 					break;
+				case 'boolean':
+					$mock = rand(0, 1) ? true : false;
+					break;
+				case 'enum':
+					if (isset($field['data']) && is_array($field['data'])) {
+						$mock = $field['data'][rand(0, count($field['data'])-1)];
+					} else {
+						$mock = $this->make();
+					}
+					break;
 				case 'number':
 					$min = 0;
 					$max = $this->doc_max;
@@ -104,14 +114,23 @@ class Mock {
 					$mock = implode('.', array(rand(0, 255), rand(0, 255), rand(0, 255), rand(0, 255)));
 					break;
 				case 'date':
-					$mock = date('Y-m-d H:i:s', rand(strtotime('1/1/2014'), strtotime('now')));
+					$format = isset($field['format']) && !empty($field['format']) ? $field['format'] : 'Y-m-d H:i:s';
+					$min = date($format, strtotime('-10 year'));
+					$max = date($format, strtotime('+10 year'));
+					if (isset($field['min']) && !empty($field['min']) && strlen($field['min']) > 3) {
+						$min = date($format, strtotime($field['min']));
+					}
+					if (isset($field['max']) && !empty($field['max']) && strlen($field['min']) > 3) {
+						$max = date($format, strtotime($field['max']));
+					}
+					$mock = date($format, rand(strtotime($min), strtotime($max)));
 					break;
 				default:
 					$s = rand(0, $this->doc_max);
 					$mock = $this->enc(substr($this->doc, $s, rand($s, $this->doc_max)));
 					break;
 			}
-			if (strlen($mock) < 1) {
+			if (!in_array($field['type'], array('boolean', 'enum')) && strlen($mock) < 1) {
 				return $this->make($index);
 			}
 			$data[$field['name']] = $mock;

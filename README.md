@@ -15,6 +15,8 @@ $columns = array(
   array('name'=> 'subject', 'type'=> 'string', 'max'=> 255),
   array('name'=> 'count', 'type'=> 'number', 'min'=>0, 'max'=>100),
   array('name'=> 'ip', 'type'=> 'ip'),
+  array('name'=> 'grade', 'type'=> 'enum', 'data'=> ['a', 'b', 'c', 'd', 'e', 'f']),
+  array('name'=> 'passed', 'type'=> 'boolean'),
   array('name'=> 'reg_date', 'type'=> 'date')
 );
 $get_columns = array_merge($columns, array(array('name'=> 'content', 'type'=> 'string')));
